@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository("wordRepository")
 public interface WordRepository extends JpaRepository<Word, Integer> {
 
+    Word findByName(String name);
 
 }

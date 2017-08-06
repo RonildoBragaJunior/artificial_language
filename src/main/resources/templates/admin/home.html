@@ -25,66 +25,30 @@
 
     <div class="panel-group" style="margin-top:40px">
         <div class="panel panel-primary">
+
+
+
             <div class="panel-heading">
                 <div class="row">
                     <div class="form-inline">
                         <div class="form-group">
-                            <label for="country">Country:</label>
-                            <input type="text" class="form-control" id="country">
+                            <label for="question"> Ask nick what is in your mind:</label>
+                            <input type="text" class="form-control" id="question">
                         </div>
-                        <button type="button" id="btn_consume" class="btn btn-default btn-sm">Consume</button>
-                        <button type="button" id="btn_save_favourite" class="btn btn-default btn-sm">Favourite</button>
-                        <button type="button" id="btn_clean" class="btn btn-default btn-sm">Clean</button>
+                        <button type="button" id="btn_ask_nick" class="btn btn-default btn-sm">SEND</button>
                     </div>
                 </div>
             </div>
 
             <div class="panel-body">
+                
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <table id="webservice_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Name</th>
-                                    <th>Country</th>
-                                    <th>Listeners</th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Name</th>
-                                    <th>Country</th>
-                                    <th>Listeners</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-
-                    <div class="col-md-6">
-                        <table id="favourite_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                            <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Name</th>
-                            </tr>
-                            </thead>
-                            <tfoot>
-                            <tr>
-                                <th>Id</th>
-                                <th>Name</th>
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                <div id="sentence">
+                    <h1>Welcome to the first artificial language produced by Fran</h1>
+                    <h2>Please use the menu above to talk with Nick</h2>
                 </div>
 
-
-
             </div>
-            <p class="admin-message-text text-center" th:utext="${adminMessage}"></p>
         </div>
     </div>
 
@@ -95,63 +59,14 @@
 
 <script type="text/javascript" charset="utf-8">
     jQuery(document).ready(function ($) {
-
-        var webservice_table = $('#webservice_table').DataTable( {
-            "ajax": '/loadWebserviceTable',
-        } );
-
-        var favourite_table = $('#favourite_table').DataTable( {
-            "ajax": '/loadFavouriteTable',
-        } );
-
-        $('#webservice_table tbody').on( 'click', 'tr', function () {
-            $(this).toggleClass('active');
-        } );
-
-        $('#favourite_table tbody').on( 'click', 'tr', function () {
-            $(this).toggleClass('active');
-        } );
-
-
-        $("#btn_consume").click(function(){
+        $("#btn_ask_nick").click(function(){
             $.ajax({
-                url: '/consumeLastfmWebservice?country='+$("#country").val(),
+                url: '/askNick?question='+$("#question").val(),
                 success: function(result){
                     console.log(result);
-                    webservice_table.ajax.reload();
+                    document.getElementById("sentence").innerHTML = result;
                 }
             });
         });
-
-        $('#btn_save_favourite').click( function () {
-            saveFavourite(webservice_table, favourite_table);
-        } );
-
-        $("#btn_clean").click(function(){
-            $.ajax({
-                url: '/clean',
-                success: function(result){
-                    console.log(result);
-                    webservice_table.ajax.reload();
-                    favourite_table.ajax.reload();
-                }
-            });
-        });
-
     });
-
-    function saveFavourite(webservice_table, favourite_table){
-        var id_list = "";
-        webservice_table.rows('.active').data().each(function (value, index) {
-            id_list += value[0]+";"
-        });
-
-        $.ajax({
-            url: '/saveFavourite?id_list='+id_list,
-            success: function(result){
-                console.log(result);
-                favourite_table.ajax.reload();
-            }
-        });
-    }
 </script>
