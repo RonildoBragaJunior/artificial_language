@@ -41,7 +41,7 @@
             </div>
 
             <div class="panel-body">
-                
+
 
                 <div id="sentence">
                     <h1>Welcome to the first artificial language produced by Fran</h1>
@@ -59,14 +59,26 @@
 
 <script type="text/javascript" charset="utf-8">
     jQuery(document).ready(function ($) {
+
+        var msg1 = new SpeechSynthesisUtterance('Welcome to the first artificial language produced by Fran');
+        window.speechSynthesis.speak(msg1);
+
+        var msg2 = new SpeechSynthesisUtterance('Please use the menu above to talk with Nick');
+        window.speechSynthesis.speak(msg2);
+
         $("#btn_ask_nick").click(function(){
             $.ajax({
                 url: '/askNick?question='+$("#question").val(),
                 success: function(result){
                     console.log(result);
                     document.getElementById("sentence").innerHTML = result;
+
+                    var msg3 = new SpeechSynthesisUtterance(result);
+                    window.speechSynthesis.speak(msg3);
                 }
             });
         });
+
+
     });
 </script>
